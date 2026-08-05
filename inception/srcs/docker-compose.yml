@@ -1,0 +1,119 @@
+version: "3"
+
+services:
+  inc_nginx:
+    container_name: inc_nginx
+    image: inc_nginx
+    volumes:
+      - wordpress:/var/www/html/wordpress
+    networks:
+      - inception
+    depends_on:
+      - inc_wordpress
+    env_file:
+      - .env
+    build:
+      context: ./requirements/nginx/
+      args:
+        COUNTRY: ${COUNTRY}
+        STATE: ${STATE}
+        CITY: ${CITY}
+        ORG: ${ORG}
+        ORG_UNIT: ${ORG_UNIT}
+        DOMAIN_NAME: ${DOMAIN_NAME}
+        CERT_UID: ${CERT_UID}
+    ports:
+      - "443:443"
+    restart: on-failure
+
+  inc_wordpress:
+    container_name: inc_wordpress
+    image: inc_wordpress
+    build: ./requirements/wordpress/
+    env_file: .env
+    volumes:
+      - wordpress:/var/www/html/wordpress
+    networks:
+      - inception
+    depends_on:
+      - inc_mariadb
+      - inc_redis
+    expose:
+      - "9000"
+    restart: on-failure
+
+  inc_mariadb:
+    container_name: inc_mariadb
+    image: inc_mariadb
+    build: ./requirements/mariadb/
+    env_file: .env
+    volumes:
+      - mariadb:/var/lib/mysql
+    networks:
+      - inception
+    expose:
+      - "3306"
+    restart: on-failure
+
+  inc_adminer:
+    container_name: inc_adminer
+    image: inc_adminer
+    build: ./requirements/adminer/
+    depends_on:
+      - inc_mariadb
+    networks:
+      - inception
+    ports:
+      - "8080:80"
+    restart: on-failure
+
+  inc_redis:
+    container_name: inc_redis
+    image: inc_redis
+    build: ./requirements/redis/
+    networks:
+      - inception
+    expose:
+      - "6379"
+    restart: on-failure
+
+  inc_ftp:
+    container_name: inc_ftp
+    image: inc_ftp
+    build:
+      context: ./requirements/ftp/
+      args:
+        FTP_USER: ${FTP_USER}
+        FTP_PSSWD: ${FTP_PSSWD}
+    volumes:
+      - wordpress:/var/www/html/wordpress
+    networks:
+      - inception
+    ports:
+      - "20:20"
+      - "21:21"
+      - "42100-42105:42100-42105"
+    env_file:
+      - .env
+    restart: on-failure
+
+volumes:
+  wordpress:
+    name: wordpress
+    driver: local
+    driver_opts:
+      type: "none"
+      o: bind
+      device: "${VOLUMES_PATH}/wordpress"
+
+  mariadb:
+    name: mariadb
+    driver: local
+    driver_opts:
+      type: "none"
+      o: bind
+      device: "${VOLUMES_PATH}/mariadb"
+
+networks:
+  inception:
+    driver: bridge
