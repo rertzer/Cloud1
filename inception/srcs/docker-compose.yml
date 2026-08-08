@@ -62,10 +62,12 @@ services:
       - "3306"
     restart: on-failure
 
-  inc_adminer:
-    container_name: inc_adminer
-    image: inc_adminer
-    build: ./requirements/adminer/
+  inc_php_myadmin:
+    container_name: inc_phpmyadmin
+    image: phpmyadmin:latest
+    environment:
+      PMA_HOST: inc_mariadb
+      PMA_PORT: 3306
     depends_on:
       - inc_mariadb
     networks:
