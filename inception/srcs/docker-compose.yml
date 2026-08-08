@@ -72,8 +72,8 @@ services:
       - inc_mariadb
     networks:
       - inception
-    ports:
-      - "8080:80"
+    expose:
+      - "80"
     restart: on-failure
 
   inc_redis:
