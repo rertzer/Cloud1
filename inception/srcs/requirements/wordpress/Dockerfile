@@ -1,6 +1,20 @@
 FROM debian:trixie
 
-RUN apt-get update && apt-get upgrade  -y && apt-get install wget php8.4 php8.4-fpm php8.4-mysql  mariadb-client -y && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y \
+        wget \
+        curl \
+        php8.4 \
+        php8.4-fpm \
+        php8.4-mysql \
+        php8.4-curl \
+        php8.4-gd \
+        php8.4-mbstring \
+        php8.4-xml \
+        php8.4-zip \
+        mariadb-client \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/www/html
  RUN chown -R root:root /var/www/html
