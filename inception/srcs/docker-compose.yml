@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   inc_nginx:
     container_name: inc_nginx
@@ -52,10 +50,21 @@ services:
   inc_mariadb:
     container_name: inc_mariadb
     image: inc_mariadb
-    build: ./requirements/mariadb/
+    build:
+      context: ./requirements/mariadb/
+      args:
+        COUNTRY: ${COUNTRY}
+        STATE: ${STATE}
+        CITY: ${CITY}
+        ORG: ${ORG}
+        ORG_UNIT: ${ORG_UNIT}
+        DOMAIN_NAME: ${DOMAIN_NAME}
+        CERT_UID: ${CERT_UID}
+        MARIA_DNS: ${MARIA_DNS}
     env_file: .env
     volumes:
       - mariadb:/var/lib/mysql
+      - ./certificate/maria_ssl/:/etc/mysql/ssl
     networks:
       - inception
     expose:
@@ -68,6 +77,11 @@ services:
     environment:
       PMA_HOST: inc_mariadb
       PMA_PORT: 3306
+      PMA_SSL: 1
+      PMA_SSL_VERIFY: 1
+      PMA_SSL_CA: "/etc/phpmyadmin/ssl/ca.pem"
+    volumes:
+      - ./certificate/maria_ssl/cloud-ca.pem:/etc/phpmyadmin/ssl/ca.pem:ro
     depends_on:
       - inc_mariadb
     networks:

@@ -1,7 +1,11 @@
 *.secret
 *.env
 *.key
+*.pem
+*.srl
+*.csr
 id_rsa
 id_rsa.pub
 id_ed25519
 id_ed25519.pub
+inception/srcs/certificate/maria_ssl/*

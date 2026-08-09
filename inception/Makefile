@@ -1,3 +1,6 @@
+CERTIF_DIR := ./srcs/certificate
+MARIA_SSL_DIR := ./srcs/certificate/maria_ssl
+
 all:	build up
 
 up:
@@ -6,19 +9,29 @@ up:
 down:
 	sudo docker compose -f srcs/docker-compose.yml down
 
-build:
+build: certif
 	mkdir -p $(HOME)/data/mariadb
 	mkdir -p $(HOME)/data/wordpress
 	sudo docker compose -f srcs/docker-compose.yml build
 
+certif:
+	$(CERTIF_DIR)/certif.sh
+
 clean: 	down
 	sudo docker system prune -af
 
-fclean:	clean
+fclean:	clean certclean
 	sudo rm -rf $(HOME)/data/mariadb
 	sudo rm -rf $(HOME)/data/wordpress
+
+certclean:
+	rm -f $(CERTIF_DIR)/cloud-ca-key.pem
+	rm -f $(CERTIF_DIR)/cloud-ca.srl
+	rm -f $(CERTIF_DIR)/maria.csr
+	rm -rf $(MARIA_SSL_DIR)
+	rm -rf ./srcs/requirements/mariadb/ssl/
 
 re:	clean
 	make all
 
-.PHONY: all build up down run clean fclean re
+.PHONY: all build  certclean certif up down run clean fclean re

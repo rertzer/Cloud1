@@ -1,4 +1,12 @@
 #!/bin/sh
+
+chown mysql:mysql /etc/mysql/ssl/*
+chmod 644 /etc/mysql/ssl/cloud-ca.pem
+chmod 644 /etc/mysql/ssl/maria-cert.pem
+chmod 600 /etc/mysql/ssl/maria-key.pem
+
+
+
 if [ -d "/var/lib/mysql/${SQL_DATABASE}" ]
 then
 	echo "${SQL_DATABASE} already exists\n"
