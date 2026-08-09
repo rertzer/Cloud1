@@ -29,4 +29,4 @@ then
 	wp redis enable --allow-root
 fi
 echo "starting php-fpm\n"
-exec /usr/sbin/php-fpm7.4 -F
+exec /usr/sbin/php-fpm8.4 -F

@@ -44,7 +44,7 @@ services:
       test: ["CMD-SHELL", "pgrep php-fpm >/dev/null"]
       interval: 4s
       timeout: 3s
-      retries: 12
+      retries: 42
       start_period: 10s
 
   inc_mariadb:
