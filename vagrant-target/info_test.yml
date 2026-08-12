@@ -1,0 +1,8 @@
+- name: "Info test"
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: "Gather User Infos"
+      debug:
+        msg: "The current user is: {{ ansible_user_id }}"
+    
