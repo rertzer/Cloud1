@@ -5,4 +5,8 @@
     - name: "Gather User Infos"
       debug:
         msg: "The current user is: {{ ansible_user_id }}"
+    - name: "copy dummy file"
+      copy:
+        src: dummy.txt
+        dest: /tmp/dummy.txt
     
