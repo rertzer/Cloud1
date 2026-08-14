@@ -1,0 +1,9 @@
+- name: Give sudo privileges to the user deploy
+  hosts: all
+  become: yes
+  tasks:
+    - name: add deploy to sudoers file
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        line: 'deploy ALL=(ALL:ALL) NOPASSWD: ALL'
+
