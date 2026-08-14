@@ -32,6 +32,7 @@ services:
     env_file: .env
     volumes:
       - wordpress:/var/www/html/wordpress
+      - ./wordpress-backup/coconut.WordPress.2026-08-14.xml:/var/www/wordpress-content.xml
     networks:
       - inception
     depends_on:
