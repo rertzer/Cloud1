@@ -31,6 +31,12 @@ certclean:
 	rm -rf $(MARIA_SSL_DIR)
 	rm -rf ./srcs/requirements/mariadb/ssl/
 
+reset:
+	sudo rm -rf $(HOME)/data/mariadb
+	sudo rm -rf $(HOME)/data/wordpress
+	mkdir -p $(HOME)/data/mariadb
+	mkdir -p $(HOME)/data/wordpress
+
 re:	clean
 	make all
 
