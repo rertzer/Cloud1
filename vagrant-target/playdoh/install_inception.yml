@@ -1,0 +1,24 @@
+- name: "Install inception"
+  hosts: all
+  remote_user: deploy
+  vars:
+    ansible_ssh_private_key_file: deploy_ed25519
+  tasks:
+    - name: "copy inception directory"
+      copy:
+        src: inception
+        dest: /var/inception
+    - name: "create mariadb directory"
+      file:
+        path: /var/data/mariadb
+        owner: "deploy"
+        group: "deploy"
+        mode: "0700"
+        state: "directory"
+    - name: "create wordpress directory"
+      file:
+        path: /var/data/wordpress
+        owner: "deploy"
+        group: "deploy"
+        mode: "0700"
+        state: "directory"
