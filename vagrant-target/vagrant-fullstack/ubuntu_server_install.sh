@@ -6,7 +6,8 @@ if [ -e /home/vagrant/.ubuntu_install_done ]; then
 else
 	echo "ubuntu install"
 	sed -i 's/^DNS=/#DNS=/' /etc/systemd/resolved.conf
-	sed -i 's/DNSSEC=yes/DNSSEC=no' /etc/systemd/resolved.conf
+	sed -i 's/DNSSEC=yes/DNSSEC=no/' /etc/systemd/resolved.conf
+	cp '01-netcfg.yaml' '/etc/netplan/01-netcfg.yaml'
 
 	netplan generate
 	netplan apply
