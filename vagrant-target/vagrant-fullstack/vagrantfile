@@ -10,7 +10,8 @@ Vagrant.configure("2") do |config|
   config.vm.define "ansible" do |ansible|
     ansible.vm.hostname = "ansible"
     ansible.vm.network "private_network", ip: "192.168.56.110"
-	ansible.vm.provision "file", source: "ubuntu_server_install.sh", destination: "/home/vagrant/ubuntu_server_install.sh"
+	ansible.vm.provision "file", source: "01-netcfg.yaml", destination: "01-netcfg.yaml"
+	ansible.vm.provision "file", source: "ubuntu_server_install.sh", destination: "/home/vagrant/ubuntu_server_install.sh" 
     ansible.vm.provision "file", source: "ansible_server_install.sh", destination: "/home/vagrant/ansible_server_install.sh" 
   end
 

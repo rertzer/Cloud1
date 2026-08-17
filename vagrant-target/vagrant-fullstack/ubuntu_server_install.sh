@@ -5,8 +5,8 @@ if [ -e /home/vagrant/.ubuntu_install_done ]; then
 	exit
 else
 	echo "ubuntu install"
-	sed -i 's/addresses:.*/addresses: 10.0.2.3/' /etc/netplan/01-netcfg.yaml
 	sed -i 's/^DNS=/#DNS=/' /etc/systemd/resolved.conf
+	sed -i 's/DNSSEC=yes/DNSSEC=no' /etc/systemd/resolved.conf
 
 	netplan generate
 	netplan apply
