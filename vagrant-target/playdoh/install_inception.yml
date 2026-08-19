@@ -7,7 +7,9 @@
     - name: "copy inception directory"
       copy:
         src: inception
-        dest: /var/inception
+        dest: /var/
+        owner: "deploy"
+        group: "deploy"
     - name: "create mariadb directory"
       file:
         path: /var/data/mariadb
@@ -22,3 +24,5 @@
         group: "deploy"
         mode: "0700"
         state: "directory"
+    - name: "Run Certificate Script"
+      command: /var/inception/srcs/certificate/certif.sh

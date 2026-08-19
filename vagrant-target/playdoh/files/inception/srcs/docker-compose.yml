@@ -1,0 +1,123 @@
+services:
+  inc_nginx:
+    container_name: inc_nginx
+    image: inc_nginx
+    volumes:
+      - wordpress:/var/www/html/wordpress
+    networks:
+      - inception
+    depends_on:
+      inc_wordpress:
+        condition: service_healthy
+    env_file:
+      - .env
+    build:
+      context: ./requirements/nginx/
+      args:
+        COUNTRY: ${COUNTRY}
+        STATE: ${STATE}
+        CITY: ${CITY}
+        ORG: ${ORG}
+        ORG_UNIT: ${ORG_UNIT}
+        DOMAIN_NAME: ${DOMAIN_NAME}
+        CERT_UID: ${CERT_UID}
+    ports:
+      - "443:443"
+    restart: on-failure
+
+  inc_wordpress:
+    container_name: inc_wordpress
+    image: inc_wordpress
+    build: ./requirements/wordpress/
+    env_file: .env
+    volumes:
+      - wordpress:/var/www/html/wordpress
+      - ./wordpress-backup/coconut.WordPress.2026-08-14.xml:/var/www/wordpress-content.xml
+    networks:
+      - inception
+    depends_on:
+      - inc_mariadb
+      - inc_redis
+    expose:
+      - "9000"
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep php-fpm >/dev/null"]
+      interval: 4s
+      timeout: 3s
+      retries: 42
+      start_period: 10s
+
+  inc_mariadb:
+    container_name: inc_mariadb
+    image: inc_mariadb
+    build:
+      context: ./requirements/mariadb/
+      args:
+        COUNTRY: ${COUNTRY}
+        STATE: ${STATE}
+        CITY: ${CITY}
+        ORG: ${ORG}
+        ORG_UNIT: ${ORG_UNIT}
+        DOMAIN_NAME: ${DOMAIN_NAME}
+        CERT_UID: ${CERT_UID}
+        MARIA_DNS: ${MARIA_DNS}
+    env_file: .env
+    volumes:
+      - mariadb:/var/lib/mysql
+      - ./certificate/maria_ssl/:/etc/mysql/ssl
+    networks:
+      - inception
+    expose:
+      - "3306"
+    restart: on-failure
+
+  inc_php_myadmin:
+    container_name: inc_phpmyadmin
+    image: phpmyadmin:latest
+    environment:
+      PMA_HOST: inc_mariadb
+      PMA_PORT: 3306
+      PMA_SSL: 1
+      PMA_SSL_VERIFY: 1
+      PMA_SSL_CA: "/etc/phpmyadmin/ssl/ca.pem"
+    volumes:
+      - ./certificate/maria_ssl/cloud-ca.pem:/etc/phpmyadmin/ssl/ca.pem:ro
+    depends_on:
+      - inc_mariadb
+    networks:
+      - inception
+    expose:
+      - "80"
+    restart: on-failure
+
+  inc_redis:
+    container_name: inc_redis
+    image: inc_redis
+    build: ./requirements/redis/
+    networks:
+      - inception
+    expose:
+      - "6379"
+    restart: on-failure
+
+volumes:
+  wordpress:
+    name: wordpress
+    driver: local
+    driver_opts:
+      type: "none"
+      o: bind
+      device: "${VOLUMES_PATH}/wordpress"
+
+  mariadb:
+    name: mariadb
+    driver: local
+    driver_opts:
+      type: "none"
+      o: bind
+      device: "${VOLUMES_PATH}/mariadb"
+
+networks:
+  inception:
+    driver: bridge

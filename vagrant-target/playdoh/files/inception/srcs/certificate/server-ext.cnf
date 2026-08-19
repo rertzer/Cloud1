@@ -1,0 +1,3 @@
+subjectAltName = DNS:inc_mariadb
+extendedKeyUsage = serverAuth
+
