@@ -4,12 +4,10 @@
 *.pem
 *.srl
 *.csr
-id_rsa
-id_rsa.pub
-id_ed25519
-id_ed25519.pub
-ed25519
-ed25519.pub
+*_rsa
+*_rsa.pub
+*ed25519
+*ed25519.pub
 private_key
 inception/srcs/certificate/maria_ssl/*
 .vagrant

@@ -26,3 +26,4 @@
         state: "directory"
     - name: "Run Certificate Script"
       command: /var/inception/srcs/certificate/certif.sh
+      chdir: /var/inception/
