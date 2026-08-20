@@ -20,6 +20,9 @@ then
 		--url="$WP_URL" \
 		--allow-root
 
+	wp config set WP_HOME "$WP_URL" --type=constant --allow-root
+	wp config set WP_SITE_URL "$WP_URL" --type=constant --allow-root
+
 	echo "plugin importer install"
 	wp plugin install wordpress-importer \
 		--activate \
