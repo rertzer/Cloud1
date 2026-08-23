@@ -10,13 +10,14 @@
         dest: /var/
         owner: "deploy"
         group: "deploy"
+    - name: "Generate .env from template"
     - name: "create mariadb directory"
-      file:
-        path: /var/data/mariadb
+      template:
+        src: .env
+        dest: /var/inception/srcs/
         owner: "deploy"
         group: "deploy"
-        mode: "0700"
-        state: "directory"
+        mode: "0440"
     - name: "create wordpress directory"
       file:
         path: /var/data/wordpress
