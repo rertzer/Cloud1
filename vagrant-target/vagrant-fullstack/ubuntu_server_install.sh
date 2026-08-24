@@ -8,6 +8,7 @@ else
 	sed -i 's/^DNS=/#DNS=/' /etc/systemd/resolved.conf
 	sed -i 's/DNSSEC=yes/DNSSEC=no/' /etc/systemd/resolved.conf
 	cp '01-netcfg.yaml' '/etc/netplan/01-netcfg.yaml'
+	chmod 640 /etc/netplan/*.yaml
 
 	netplan generate
 	netplan apply

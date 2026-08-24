@@ -11,13 +11,26 @@
         owner: "deploy"
         group: "deploy"
     - name: "Generate .env from template"
-    - name: "create mariadb directory"
       template:
         src: .env
         dest: /var/inception/srcs/
         owner: "deploy"
         group: "deploy"
         mode: "0440"
+    - name: "Generate nginx.conf from template"
+      template:
+        src: nginx.conf.j2
+        dest: /var/inception/srcs/nginx/conf/nginx.conf
+        owner: "deploy"
+        group: "deploy"
+        mode: "0640"
+    - name: "create mariadb directory"
+      file:
+      path: /var/data/mariadb
+      owner: "deploy"
+      group: "deploy"
+      mode: "0700"
+      state: "directory"
     - name: "create wordpress directory"
       file:
         path: /var/data/wordpress

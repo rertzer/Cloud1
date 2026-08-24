@@ -1,7 +1,7 @@
 - name: "Install Docker"
   hosts: all
-  become: yes
-  tasks:
+  become: true
+  block:
     - name: "updating packages and install ca-certificates and curl"
       apt:
         update_cache: yes
@@ -33,10 +33,8 @@
       apt:
         update_cache: yes
         pkg:
-          - docker-ce 
+          - docker-ce
           - docker-ce-cli
           - containerd.io
           - docker-buildx-plugin
           - docker-compose-plugin
-
-

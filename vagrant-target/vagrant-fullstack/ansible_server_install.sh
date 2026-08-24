@@ -9,7 +9,6 @@ else
 	sudo apt update
 	sudo NEEDRESTART_MODE=a apt install python3-pip -y
 	sudo python3 -m pip install ansible
-	#installed in '/home/vagrant/.local/bin' which is not on PATH.
 	ansible-galaxy collection install community.docker
 
 	touch /home/vagrant/.ansible_install_done
