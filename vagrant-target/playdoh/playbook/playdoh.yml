@@ -1,5 +1,6 @@
 - name: Deploy Inception
   hosts: all
+  become: true
   roles:
     - role: "install_docker"
     - role: "deploy_user"
