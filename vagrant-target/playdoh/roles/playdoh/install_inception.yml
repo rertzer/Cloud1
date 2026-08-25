@@ -1,8 +1,6 @@
 - name: "Install inception"
   hosts: all
   remote_user: deploy
-  vars:
-    ansible_ssh_private_key_file: deploy_ed25519
   tasks:
     - name: "copy inception directory"
       copy:
@@ -12,8 +10,8 @@
         group: "deploy"
     - name: "Generate .env from template"
       template:
-        src: .env
-        dest: /var/inception/srcs/
+        src: .env.j2
+        dest: /var/inception/srcs/.env
         owner: "deploy"
         group: "deploy"
         mode: "0440"

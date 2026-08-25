@@ -1,0 +1,43 @@
+- name: "Install inception"
+  hosts: all
+  remote_user: deploy
+  vars:
+    ansible_ssh_private_key_file: deploy_ed25519
+  block:
+    - name: "copy inception directory"
+      copy:
+        src: inception
+        dest: /var/
+        owner: "deploy"
+        group: "deploy"
+    - name: "Generate .env from template"
+      template:
+        src: .env.j2
+        dest: /var/inception/srcs/.env
+        owner: "deploy"
+        group: "deploy"
+        mode: "0440"
+    - name: "Generate nginx.conf from template"
+      template:
+        src: nginx.conf.j2
+        dest: /var/inception/srcs/nginx/conf/nginx.conf
+        owner: "deploy"
+        group: "deploy"
+        mode: "0640"
+    - name: "create mariadb directory"
+      file:
+      path: /var/data/mariadb
+      owner: "deploy"
+      group: "deploy"
+      mode: "0700"
+      state: "directory"
+    - name: "create wordpress directory"
+      file:
+        path: /var/data/wordpress
+        owner: "deploy"
+        group: "deploy"
+        mode: "0700"
+        state: "directory"
+    - name: "Run Certificate Script"
+      command: /var/inception/srcs/certificate/certif.sh
+      chdir: /var/inception/

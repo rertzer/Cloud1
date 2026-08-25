@@ -1,11 +1,33 @@
 Vagrant.configure("2") do |config|
-	config.vm.box = "generic/ubuntu2204"
+  config.vm.box = "generic/ubuntu2204"
 
-	config.vm.provider "virtualbox" do |vb|
-		vb.memory = "2048"
-		vb.cpus = 4
-	end
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "2048"
+    vb.cpus = 2
+  end
 
-	config.vm.network "private_network", ip: "192.168.56.102"
-	config.vm.provision "file", source: "./cloud_ed25519.pub", destination: "/tmp/known_hosts"
+  # Ansible Server
+  config.vm.define "playdoh" do |playdoh|
+    playdoh.vm.hostname = "playdoh"
+    playdoh.vm.network "private_network", ip: "192.168.56.110"
+	playdoh.vm.provision "file", source: "files/01-netcfg.yaml", destination: "01-netcfg.yaml"
+	playdoh.vm.provision "shell", path: "tools/ubuntu_server_install.sh"
+    playdoh.vm.provision "shell", path: "tools/ansible_server_install.sh" 
+	playdoh.vm.provision "file", source: "../playdoh", destination: "/home/vagrant/playdoh"
+	playdoh.vm.provision "file", source: "files/cloud_ed25519", destination: "/home/vagrant/.ssh/cloud_ed25519"
+	playdoh.vm.provision "file", source: "files/ansible.cfg", destination: "/home/vagrant/ansible.cfg"
+	playdoh.vm.provision "shell", inline: "chmod 600 /home/vagrant/.ssh/cloud_ed25519"
+	playdoh.vm.provision "shell", path: "tools/pass_generator.sh"
+
+  end
+
+  # Server Worker
+  #config.vm.define "pixie" do |pixie|
+  # pixie.vm.hostname = "pixie"
+  # pixie.vm.network "private_network", ip: "192.168.56.111"
+  # pixie.vm.provision "file", source: "files/ubuntu_server_install.sh", destination: "/home/vagrant/ubuntu_server_install.sh" 
+  # pixie.vm.provision "shell", inline: "chmod 755 /home/vagrant/ubuntu_server_install.sh"
+  # pixie.vm.provision "file", source: "files/cloud_ed25519.pub", destination:"/home/vagrant/.ssh/cloud_ed25519.pub"
+  # pixie.vm.provision "shell", inline: "cat /home/vagrant/.ssh/cloud_ed25519.pub >> /home/vagrant/.ssh/authorized_keys"
+ #end
 end

@@ -3,3 +3,5 @@
   roles:
     - role: "install_docker"
     - role: "deploy_user"
+    - role: "install_inception"
+    - role: "deploy_inception"
