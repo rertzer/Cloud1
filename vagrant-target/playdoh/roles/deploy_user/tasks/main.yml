@@ -1,44 +1,51 @@
-- name: Create user deploy
-  hosts: all
+- name: create locally files directory
+  file:
+    path: "{{ role_path }}/files"
+    state: "directory"
+    owner: "vagrant"
+    group: "vagrant"
+  connection: local
+  run_once: true
+
+- name: create locally shh keys
+  command: ssh-keygen -q -t ed25519 -f {{ role_path }}/files/deploy_ed25519 -C "deploy" -N ""
   become: true
-  block:
-    - name: create locally shh keys
-      command: ssh-keygen -q -t ed25519 -f {{role_path}}/files/deploy_ed25519 -C "deploy" -N ""
-      connection: local
-      run_once: true
+  become_user: "vagrant"
+  connection: local
+  run_once: true
 
-    - name: Create User
-      ansible.builtin.user:
-        name: deploy
-        comment: ansible deploy
-        create_home: yes
-        shell: /bin/bash
-        groups: sudo
-        password: "!"
+- name: Create User
+  ansible.builtin.user:
+    name: deploy
+    comment: ansible deploy
+    create_home: yes
+    shell: /bin/bash
+    groups: sudo
+    password: "!"
 
-    - name: add user to sudoers file
-      ansible.builtin.lineinfile:
-        path: /etc/sudoers
-        line: "deploy ALL=(ALL:ALL) NOPASSWD: ALL"
+- name: add user to sudoers file
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    line: "deploy ALL=(ALL:ALL) NOPASSWD: ALL"
 
-    - name: "create .ssh directory"
-      file:
-        path: /home/deploy/.ssh
-        owner: "deploy"
-        group: "deploy"
-        mode: "0700"
-        state: "directory"
+- name: "create .ssh directory"
+  file:
+    path: /home/deploy/.ssh
+    owner: "deploy"
+    group: "deploy"
+    mode: "0700"
+    state: "directory"
 
-    - name: "copy public key as authorized_keys"
-      copy:
-        src: deploy_ed25519.pub
-        dest: /home/deploy/.ssh/authorized_keys
-        owner: deploy
-        group: deploy
-        mode: "0600"
+- name: "copy public key as authorized_keys"
+  copy:
+    src: deploy_ed25519.pub
+    dest: /home/deploy/.ssh/authorized_keys
+    owner: deploy
+    group: deploy
+    mode: "0600"
 
-    - name: add user to group docker
-      ansible.builtin.user:
-        name: deploy
-        groups: docker
-        append: yes
+- name: add user to group docker
+  ansible.builtin.user:
+    name: deploy
+    groups: docker
+    append: yes

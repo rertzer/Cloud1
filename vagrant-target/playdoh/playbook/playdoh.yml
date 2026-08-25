@@ -1,8 +1,22 @@
 - name: Deploy Inception
   hosts: all
   become: true
-  roles:
-    - role: "install_docker"
-    - role: "deploy_user"
-    - role: "install_inception"
-    - role: "deploy_inception"
+  tasks:
+    - name: "install docker"
+      include_role:
+        name: "install_docker"
+
+    - name: "deploy user"
+      include_role:
+        name: "deploy_user"
+
+    - name: "install inception"
+      include_role:
+        name: "install_inception"
+      vars:
+        ansible_user: "deploy"
+      ansible_user: "deploy"
+
+    - name: "deploy inception"
+      include_role:
+        name: "deploy_inception"
