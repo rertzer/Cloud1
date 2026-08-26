@@ -1,4 +1,4 @@
-- name: create locally files directory
+- name: Create locally files directory
   file:
     path: "{{ role_path }}/files"
     state: "directory"
@@ -7,12 +7,20 @@
   connection: local
   run_once: true
 
-- name: create locally shh keys
+- name: Check if shh key exists
+  ansible.builtin.stat:
+    path: "{{ role_path }}/files/deploy_ed25519"
+  register: ssh_key_check
+  connection: local
+  run_once: true
+
+- name: Create locally shh keys
   command: ssh-keygen -q -t ed25519 -f {{ role_path }}/files/deploy_ed25519 -C "deploy" -N ""
   become: true
   become_user: "vagrant"
   connection: local
   run_once: true
+  when: not ssh_key_check
 
 - name: Create User
   ansible.builtin.user:

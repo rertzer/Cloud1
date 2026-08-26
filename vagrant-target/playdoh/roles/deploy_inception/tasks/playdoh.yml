@@ -1,4 +1,0 @@
-- name: Deploy Inception
-  hosts: all
-  block:
-    - name: Deploy inception

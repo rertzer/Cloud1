@@ -15,8 +15,9 @@
         name: "install_inception"
       vars:
         ansible_user: "deploy"
-      ansible_user: "deploy"
 
     - name: "deploy inception"
       include_role:
         name: "deploy_inception"
+      vars:
+        ansible_user: "deploy"
