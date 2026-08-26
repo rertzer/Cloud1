@@ -20,7 +20,7 @@
   become_user: "vagrant"
   connection: local
   run_once: true
-  when: not ssh_key_check
+  when: not ssh_key_check.stat.exists
 
 - name: Create User
   ansible.builtin.user:

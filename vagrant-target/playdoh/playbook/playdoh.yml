@@ -2,6 +2,10 @@
   hosts: all
   become: true
   tasks:
+    - name: "Firewall installation"
+      include_role:
+        name: "firewall"
+
     - name: "install docker"
       include_role:
         name: "install_docker"
